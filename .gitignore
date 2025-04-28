@@ -1,0 +1,22 @@
+# Visual Studio stuff
+Debug/
+Release/
+.vs/
+*.vcxproj.user
+*.VC.db
+*.VC.opendb
+
+# Compiled files and binaries
+*.obj
+*.exe
+*.dll
+*.pdb
+*.idb
+*.tlog
+*.log
+*.tmp
+
+# Temporary files
+*~
+*.swp
+*.bak
