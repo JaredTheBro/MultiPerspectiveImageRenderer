@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 class Model
 {
@@ -12,11 +14,16 @@ public:
 	~Model();
 
 	void loadFileObj(const std::string&& filename);
-
+	GLuint getOpenGLVertexArr();
+	size_t getTriangleArrSize();
 	
 protected:
 
-	std::vector<glm::vec3> vertices;
-	std::vector<std::vector<int>> triangles;
+	std::vector<float> vertices; // triples (x, y, z)
+	std::vector<unsigned int> triangles; // triples
 
+	GLuint varr;
+	GLuint vbuf;
+	GLuint vcount;
+	GLuint ebuf;
 };

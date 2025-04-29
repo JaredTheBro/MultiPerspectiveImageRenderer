@@ -82,8 +82,8 @@
     <LibraryPath>C:\Libraries\freeglut\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>C:\Libraries\FreeGLUT\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Libraries\GLM;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Libraries\FreeGLUT\lib;C:\Libraries\GLEW\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Libraries\GLM;C:\Libraries\GLEW\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +96,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>freeglut.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

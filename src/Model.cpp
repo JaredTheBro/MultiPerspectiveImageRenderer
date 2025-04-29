@@ -5,8 +5,13 @@
 
 Model::Model()
 {
-	vertices = std::vector<glm::vec3>();
-	triangles = std::vector<std::vector<int>>();
+	vertices = std::vector<float>();
+	triangles = std::vector<unsigned int>();
+
+	varr = 0;
+	vbuf = 0;
+	vcount = 0;
+	ebuf = 0;
 }
 
 Model::~Model()
@@ -36,11 +41,9 @@ void Model::loadFileObj(const std::string&& filename)
 		if (elems[0].compare("v") == 0)
 		{
 			// Vertex
-			vertices.push_back(glm::vec3(
-				std::stof(elems[1]),
-				std::stof(elems[2]),
-				std::stof(elems[3])
-			));
+			vertices.push_back(std::stof(elems[1]));
+			vertices.push_back(std::stof(elems[2]));
+			vertices.push_back(std::stof(elems[3]));
 		}
 		else if (elems[0].compare("f") == 0 && elems.size() <= 5)
 		{
@@ -48,11 +51,9 @@ void Model::loadFileObj(const std::string&& filename)
 			if (elems.size() == 4)
 			{
 				// Triangle
-				std::vector<int> verts = std::vector<int>();
-				verts.push_back(std::stoi(elems[1].substr(0, elems[1].find('/'))) - 1);
-				verts.push_back(std::stoi(elems[2].substr(0, elems[2].find('/'))) - 1);
-				verts.push_back(std::stoi(elems[3].substr(0, elems[3].find('/'))) - 1);
-				triangles.push_back(verts);
+				triangles.push_back((unsigned int) std::stoi(elems[1].substr(0, elems[1].find('/'))) - 1);
+				triangles.push_back((unsigned int) std::stoi(elems[2].substr(0, elems[2].find('/'))) - 1);
+				triangles.push_back((unsigned int) std::stoi(elems[3].substr(0, elems[3].find('/'))) - 1);
 			}
 			else
 			{
@@ -60,11 +61,9 @@ void Model::loadFileObj(const std::string&& filename)
 				for (size_t i = 1; i < elems.size() - 2; i++)
 				{
 					// Fan triangulation only does convex shapes
-					std::vector<int> verts = std::vector<int>();
-					verts.push_back(std::stoi(elems[i].substr(0, elems[i].find('/'))) - 1);
-					verts.push_back(std::stoi(elems[i+1].substr(0, elems[i+1].find('/'))) - 1);
-					verts.push_back(std::stoi(elems[i+2].substr(0, elems[i+2].find('/'))) - 1);
-					triangles.push_back(verts);
+					triangles.push_back((unsigned int) std::stoi(elems[0].substr(0, elems[0].find('/'))) - 1);
+					triangles.push_back((unsigned int) std::stoi(elems[i+1].substr(0, elems[i+1].find('/'))) - 1);
+					triangles.push_back((unsigned int) std::stoi(elems[i+2].substr(0, elems[i+2].find('/'))) - 1);
 				}
 			}
 		}
@@ -73,6 +72,30 @@ void Model::loadFileObj(const std::string&& filename)
 			std::getline(objFile, line);
 		}
 	}
+
+	// Send obj data to OpenGL for rendering
+	glGenVertexArrays(1, &varr);
+	glGenBuffers(1, &vbuf);
+	glGenBuffers(1, &ebuf);
+	glBindVertexArray(varr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbuf);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebuf);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size() * sizeof(unsigned int), triangles.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
+}
+
+GLuint Model::getOpenGLVertexArr() {
+	return varr;
+}
+
+size_t Model::getTriangleArrSize() {
+	return triangles.size();
 }
 
 std::vector<std::string> splitBySpaces(const std::string& in)
