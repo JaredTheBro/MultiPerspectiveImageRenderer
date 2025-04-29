@@ -4,12 +4,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-class Mesh
+class Model
 {
 public:
 
-	Mesh();
-	~Mesh();
+	Model();
+	~Model();
 
 	void loadFileObj(const std::string&& filename);
 
@@ -17,6 +17,6 @@ public:
 protected:
 
 	std::vector<glm::vec3> vertices;
-	std::vector<unsigned int[3]> faces;
+	std::vector<std::vector<int>> triangles;
 
 };
