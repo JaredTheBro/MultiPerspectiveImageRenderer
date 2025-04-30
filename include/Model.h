@@ -13,9 +13,8 @@ public:
 	Model();
 	~Model();
 
-	void loadFileObj(const std::string&& filename);
-	GLuint getOpenGLVertexArr();
-	size_t getTriangleArrSize();
+	void loadFileObj(const std::string& filename);
+	void drawVertexArray();
 	
 protected:
 
@@ -26,4 +25,6 @@ protected:
 	GLuint vbuf;
 	GLuint vcount;
 	GLuint ebuf;
+
+	std::vector<std::string> splitBySpaces(std::string& in);
 };

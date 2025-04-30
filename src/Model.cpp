@@ -1,6 +1,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <iostream>
+
 #include "Model.h"
 
 Model::Model()
@@ -19,23 +21,31 @@ Model::~Model()
 
 }
 
-void Model::loadFileObj(const std::string&& filename)
+void Model::loadFileObj(const std::string& filename)
 {
 	// Prepare file
 	std::ifstream objFile(filename);
 	if (!objFile) {
 		// File error
-		return;
+		exit(1);
 	}
 
 	std::string line;
 	std::getline(objFile, line);
 
 	// Loop line by line to parse the file
-	while (!objFile.eof())
+	while (!(objFile.eof()))
 	{
 		// Split up line into its elements
 		std::vector<std::string> elems = splitBySpaces(line);
+
+		printf("%d\n", elems.size());
+
+		// Make sure line isn't empty
+		if (elems.size() == 0) {
+			std::getline(objFile, line);
+			continue;
+		}
 
 		// Check what line describes
 		if (elems[0].compare("v") == 0)
@@ -45,7 +55,7 @@ void Model::loadFileObj(const std::string&& filename)
 			vertices.push_back(std::stof(elems[2]));
 			vertices.push_back(std::stof(elems[3]));
 		}
-		else if (elems[0].compare("f") == 0 && elems.size() <= 5)
+		else if (elems[0].compare("f") == 0)
 		{
 			// Face - only supports convex shapes for now
 			if (elems.size() == 4)
@@ -61,16 +71,23 @@ void Model::loadFileObj(const std::string&& filename)
 				for (size_t i = 1; i < elems.size() - 2; i++)
 				{
 					// Fan triangulation only does convex shapes
-					triangles.push_back((unsigned int) std::stoi(elems[0].substr(0, elems[0].find('/'))) - 1);
+					triangles.push_back((unsigned int) std::stoi(elems[1].substr(0, elems[1].find('/'))) - 1);
 					triangles.push_back((unsigned int) std::stoi(elems[i+1].substr(0, elems[i+1].find('/'))) - 1);
 					triangles.push_back((unsigned int) std::stoi(elems[i+2].substr(0, elems[i+2].find('/'))) - 1);
 				}
 			}
 		}
-		else {
-			// Line type not handled, skip
-			std::getline(objFile, line);
-		}
+		
+		// Next line
+		std::getline(objFile, line);
+	}
+
+	// Test prints
+	for (size_t i = 0; i < vertices.size() - 2; i += 3) {
+		printf("v %f %f %f\n", vertices[i], vertices[i + 1], vertices[i + 2]);
+	}
+	for (size_t i = 0; i < triangles.size() - 2; i += 3) {
+		printf("f %d %d %d\n", triangles[i], triangles[i + 1], triangles[i + 2]);
 	}
 
 	// Send obj data to OpenGL for rendering
@@ -90,15 +107,14 @@ void Model::loadFileObj(const std::string&& filename)
 	glBindVertexArray(0);
 }
 
-GLuint Model::getOpenGLVertexArr() {
-	return varr;
+void Model::drawVertexArray()
+{
+	glBindVertexArray(varr);
+	glDrawElements(GL_TRIANGLES, triangles.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
-size_t Model::getTriangleArrSize() {
-	return triangles.size();
-}
-
-std::vector<std::string> splitBySpaces(const std::string& in)
+std::vector<std::string> Model::splitBySpaces(std::string& in)
 {
 	std::istringstream ss(in);
 	std::vector<std::string> elements;
