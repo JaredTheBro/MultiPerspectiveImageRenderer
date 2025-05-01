@@ -95,37 +95,32 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(1280, 720);
-    glutCreateWindow("Hello FreeGLUT");
-    
-    printf("test1\n");
+    glutCreateWindow("Multi-Perspective Renderer");
 
     GLenum res = glewInit();
     if (res != GLEW_OK) {
         exit(1);
     }
 
-    printf("test2\n");
-
     glEnable(GL_DEPTH_TEST);
 
-    printf("test3\n");
-
     // Load model
-    filename = "models/test1.obj";
+    filename = "models/cube.obj";
     obj = new Model();
     obj->loadFileObj(filename);
 
     // Make camera
     cam = new Camera();
 
-    printf("test4\n");
-
     // Set up GLUT callbacks
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPressed);
     glutSpecialFunc(specialPressed);
 
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // Wireframe mode, uncomment for testing
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    
+    // Start main loop
     glutMainLoop();
 
     delete obj;

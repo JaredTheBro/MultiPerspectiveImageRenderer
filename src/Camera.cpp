@@ -4,20 +4,18 @@
 
 Camera::Camera()
 {
-	camPos = glm::vec3(0, 0, -5);
+	camPos = glm::vec3(0, 0, 5);
 	camRot = { 0, 0, 0 };
 
 	camView = glm::mat4(1.0);
 	camProj = glm::mat4(1.0);
 
 	moveStep = 0.1;
-	rotStep = 5; // degrees
+	rotStep = 2.5; // degrees
 }
 
 Camera::~Camera()
-{
-
-}
+{}
 
 glm::vec3 Camera::getPos()
 {
@@ -114,18 +112,18 @@ void Camera::lookDown()
 
 void Camera::lookLeft()
 {
-	camRot.yaw += rotStep;
-	if (camRot.yaw >= 360) {
-		camRot.yaw -= 360;
+	camRot.yaw -= rotStep;
+	if (camRot.yaw < 0) {
+		camRot.yaw == 360;
 	}
 	updateCamMatrices();
 }
 
 void Camera::lookRight()
 {
-	camRot.yaw -= rotStep;
-	if (camRot.yaw < 0) {
-		camRot.yaw == 360;
+	camRot.yaw += rotStep;
+	if (camRot.yaw >= 360) {
+		camRot.yaw -= 360;
 	}
 	updateCamMatrices();
 }

@@ -83,12 +83,14 @@ void Model::loadFileObj(const std::string& filename)
 	}
 
 	// Test prints
+	/*
 	for (size_t i = 0; i < vertices.size() - 2; i += 3) {
 		printf("v %f %f %f\n", vertices[i], vertices[i + 1], vertices[i + 2]);
 	}
 	for (size_t i = 0; i < triangles.size() - 2; i += 3) {
 		printf("f %d %d %d\n", triangles[i], triangles[i + 1], triangles[i + 2]);
 	}
+	*/
 
 	// Send obj data to OpenGL for rendering
 	glGenVertexArrays(1, &varr);
