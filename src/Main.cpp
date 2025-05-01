@@ -2,32 +2,99 @@
 #include <GL/freeglut.h>
 #include <string>
 #include "Model.h"
+#include "Camera.h"
 
+// Important variables
 Model* obj;
+Camera* cam;
 std::string filename;
+
+// GLUT callback functions
+static void display();
+static void keyPressed(unsigned char key, int mousex, int mousey);
+static void specialPressed(int key, int mousex, int mousey);
 
 static void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, 16.0f / 10, 0.1, 100.0);
+    gluPerspective(45.0, 16.0f / 9, 0.1, 100.0);
 
+    glm::vec3 pos = cam->getPos();
+    glm::vec3 lookPoint = cam->getLookPoint();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, 3,   // eye
-        0, 0, 0,   // center
+    gluLookAt(pos.x, pos.y, pos.z,   // eye
+        lookPoint.x, lookPoint.y, lookPoint.z,   // center
         0, 1, 0);  // up
 
     // Draw vertex array
     obj->drawVertexArray();
 
-    glPopMatrix();
+    // glPopMatrix();
     glutSwapBuffers();
+}
+
+// Handle normal keyboard input
+static void keyPressed(unsigned char key, int mousex, int mousey)
+{
+    switch (key)
+    {
+    case 'w':
+        cam->moveForward();
+        glutPostRedisplay(); // Redraw scene after camera moves
+        break;
+    case 'a':
+        cam->moveLeft();
+        glutPostRedisplay();
+        break;
+    case 's':
+        cam->moveBackward();
+        glutPostRedisplay();
+        break;
+    case 'd':
+        cam->moveRight();
+        glutPostRedisplay();
+        break;
+    case 'q':
+        cam->moveDown();
+        glutPostRedisplay();
+        break;
+    case 'e':
+        cam->moveUp();
+        glutPostRedisplay();
+        break;
+    }
+}
+
+static void specialPressed(int key, int mousex, int mousey)
+{
+    switch (key)
+    {
+    case GLUT_KEY_UP:
+        cam->lookUp();
+        glutPostRedisplay(); // Redraw scene after camera moves
+        break;
+    case GLUT_KEY_DOWN:
+        cam->lookDown();
+        glutPostRedisplay();
+        break;
+    case GLUT_KEY_LEFT:
+        cam->lookLeft();
+        glutPostRedisplay();
+        break;
+    case GLUT_KEY_RIGHT:
+        cam->lookRight();
+        glutPostRedisplay();
+        break;
+    }
 }
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(1280, 720);
     glutCreateWindow("Hello FreeGLUT");
     
     printf("test1\n");
@@ -40,7 +107,6 @@ int main(int argc, char** argv) {
     printf("test2\n");
 
     glEnable(GL_DEPTH_TEST);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
     printf("test3\n");
 
@@ -49,12 +115,20 @@ int main(int argc, char** argv) {
     obj = new Model();
     obj->loadFileObj(filename);
 
+    // Make camera
+    cam = new Camera();
+
     printf("test4\n");
 
+    // Set up GLUT callbacks
     glutDisplayFunc(display);
+    glutKeyboardFunc(keyPressed);
+    glutSpecialFunc(specialPressed);
+
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glutMainLoop();
 
     delete obj;
+    delete cam;
     return 0;
 }
