@@ -98,10 +98,10 @@ void Model::loadFileObj(const std::string& filename)
 	glBindVertexArray(varr);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbuf);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebuf);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size() * sizeof(unsigned int), triangles.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size() * sizeof(unsigned int), triangles.data(), GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -111,7 +111,7 @@ void Model::loadFileObj(const std::string& filename)
 void Model::drawVertexArray()
 {
 	glBindVertexArray(varr);
-	glDrawElements(GL_TRIANGLES, triangles.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, triangles.size() + pointTris.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -172,16 +172,19 @@ void Model::updateOpenGLData()
 	std::vector<float> completeVerts = vertices;
 	completeVerts.insert(completeVerts.end(), pointVerts.begin(), pointVerts.end());
 	std::vector<unsigned int> completeTris = triangles;
-	triangles.insert(triangles.end(), pointTris.begin(), pointTris.end());
+	completeTris.insert(completeTris.end(), pointTris.begin(), pointTris.end());
 
+	// Send the new data to OpenGL
 	glBindVertexArray(varr);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbuf);
-	glBufferData(GL_ARRAY_BUFFER, completeVerts.size() * sizeof(float), completeVerts.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, completeVerts.size() * sizeof(float), completeVerts.data(), GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebuf);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, completeTris.size() * sizeof(unsigned int), completeTris.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, completeTris.size() * sizeof(unsigned int), completeTris.data(), GL_DYNAMIC_DRAW);
 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 
 	// Data updated, now redraw scene to show it

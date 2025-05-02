@@ -39,16 +39,26 @@ void Camera::updateCamMatrices()
 
 glm::vec3 Camera::calcLookPoint()
 {
+	glm::vec3 forward = calcForward();
+	// printf("Angle: p %f y %f\n", camRot.pitch, camRot.yaw);
+	// printf("Forward: %f %f %f\n\n", forward.x, forward.y, forward.z);
 	return camPos + calcForward();
 }
 
 glm::vec3 Camera::calcForward()
 {
 	return glm::normalize(glm::vec3(
+		sinf(glm::radians(camRot.yaw)),
+		0,
+		-cosf(glm::radians(camRot.yaw))
+	));
+	/*
+	return glm::normalize(glm::vec3(
 		cosf(glm::radians(camRot.pitch)) * sinf(glm::radians(camRot.yaw)),
 		sinf(glm::radians(camRot.pitch)),
 		-cosf(glm::radians(camRot.pitch)) * cosf(glm::radians(camRot.yaw))
 	));
+	*/
 }
 
 glm::vec3 Camera::calcRight()
@@ -102,6 +112,7 @@ void Camera::lookUp()
 	camRot.pitch += rotStep;
 	if (camRot.pitch >= 360) {
 		camRot.pitch -= 360;
+		printf("Reset\n");
 	}
 	updateCamMatrices();
 }
@@ -111,6 +122,7 @@ void Camera::lookDown()
 	camRot.pitch -= rotStep;
 	if (camRot.pitch < 0) {
 		camRot.pitch += 360;
+		printf("Reset\n");
 	}
 	updateCamMatrices();
 }

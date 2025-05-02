@@ -6,11 +6,11 @@ PathTracer::PathTracer()
 	// (rhombus for now)
 	pointVerts = {
 		0, 0.05f, 0,
-		0, -0.05f, 0,
 		0.05f, 0, 0,
 		-0.05f, 0, 0,
 		0, 0, 0.05f,
-		0, 0, -0.05f
+		0, 0, -0.05f,
+		0, -0.05f, 0
 	};
 	pointFaces = { // zero-indexed
 		0, 1, 2,
@@ -50,5 +50,8 @@ void PathTracer::addPoint(Camera* cam, Model* model)
 // Remove the most recently added point. (for now)
 void PathTracer::removePoint(Model* model)
 {
-	model->removePathPoint(pointVerts.size(), pointFaces.size());
+	if (!points.empty()) {
+		points.pop_back();
+		model->removePathPoint(pointVerts.size(), pointFaces.size());
+	}
 }

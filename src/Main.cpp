@@ -17,6 +17,8 @@ static void keyPressed(unsigned char key, int mousex, int mousey);
 static void specialPressed(int key, int mousex, int mousey);
 
 static void display() {
+    // Set up solid color
+    glColor3f(0.6f, 0.6f, 0.6f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
@@ -76,6 +78,7 @@ static void specialPressed(int key, int mousex, int mousey)
 {
     switch (key)
     {
+    /*
     case GLUT_KEY_UP:
         cam->lookUp();
         glutPostRedisplay(); // Redraw scene after camera moves
@@ -84,6 +87,7 @@ static void specialPressed(int key, int mousex, int mousey)
         cam->lookDown();
         glutPostRedisplay();
         break;
+    */
     case GLUT_KEY_LEFT:
         cam->lookLeft();
         glutPostRedisplay();
@@ -127,7 +131,7 @@ int main(int argc, char** argv) {
     glutSpecialFunc(specialPressed);
 
     // Wireframe mode, uncomment for testing
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     // Start main loop
     glutMainLoop();
