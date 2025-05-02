@@ -10,8 +10,8 @@ Camera::Camera()
 	camView = glm::mat4(1.0);
 	camProj = glm::mat4(1.0);
 
-	moveStep = 0.1;
-	rotStep = 2.5; // degrees
+	moveStep = 0.1f;
+	rotStep = 2.5f; // degrees
 }
 
 Camera::~Camera()
@@ -20,6 +20,11 @@ Camera::~Camera()
 glm::vec3 Camera::getPos()
 {
 	return camPos;
+}
+
+CamOrientation Camera::getRot()
+{
+	return camRot;
 }
 
 glm::vec3 Camera::getLookPoint()
@@ -105,7 +110,7 @@ void Camera::lookDown()
 {
 	camRot.pitch -= rotStep;
 	if (camRot.pitch < 0) {
-		camRot.pitch == 360;
+		camRot.pitch += 360;
 	}
 	updateCamMatrices();
 }
@@ -114,7 +119,7 @@ void Camera::lookLeft()
 {
 	camRot.yaw -= rotStep;
 	if (camRot.yaw < 0) {
-		camRot.yaw == 360;
+		camRot.yaw += 360;
 	}
 	updateCamMatrices();
 }

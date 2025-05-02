@@ -3,10 +3,12 @@
 #include <string>
 #include "Model.h"
 #include "Camera.h"
+#include "PathTracer.h"
 
 // Important variables
 Model* obj;
 Camera* cam;
+PathTracer* pather;
 std::string filename;
 
 // GLUT callback functions
@@ -65,6 +67,8 @@ static void keyPressed(unsigned char key, int mousex, int mousey)
         cam->moveUp();
         glutPostRedisplay();
         break;
+    case ' ':
+        pather->addPoint(cam, obj);
     }
 }
 
@@ -88,6 +92,8 @@ static void specialPressed(int key, int mousex, int mousey)
         cam->lookRight();
         glutPostRedisplay();
         break;
+    case GLUT_KEY_SHIFT_L:
+        pather->removePoint(obj);
     }
 }
 
@@ -111,6 +117,9 @@ int main(int argc, char** argv) {
 
     // Make camera
     cam = new Camera();
+
+    // Make path tracer
+    pather = new PathTracer();
 
     // Set up GLUT callbacks
     glutDisplayFunc(display);

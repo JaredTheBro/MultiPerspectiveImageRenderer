@@ -22,10 +22,12 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\PathTracer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Model.h" />
+    <ClInclude Include="include\PathTracer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

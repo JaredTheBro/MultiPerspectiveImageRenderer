@@ -10,6 +10,9 @@ Model::Model()
 	vertices = std::vector<float>();
 	triangles = std::vector<unsigned int>();
 
+	pointVerts = std::vector<float>();
+	pointTris = std::vector<unsigned int>();
+
 	varr = 0;
 	vbuf = 0;
 	vcount = 0;
@@ -17,9 +20,7 @@ Model::Model()
 }
 
 Model::~Model()
-{
-
-}
+{}
 
 void Model::loadFileObj(const std::string& filename)
 {
@@ -38,8 +39,6 @@ void Model::loadFileObj(const std::string& filename)
 	{
 		// Split up line into its elements
 		std::vector<std::string> elems = splitBySpaces(line);
-
-		printf("%d\n", elems.size());
 
 		// Make sure line isn't empty
 		if (elems.size() == 0) {
@@ -127,4 +126,64 @@ std::vector<std::string> Model::splitBySpaces(std::string& in)
 		elements.push_back(item);
 	}
 	return elements;
+}
+
+// Add the polygon representation of a point plotted by the user.
+// The given vectors are that new point's vertices and faces.
+void Model::addPathPoint(std::vector<float> verts, std::vector<unsigned int> tris)
+{
+	// For this point's faces, we have to add the number of vertices already in
+	// the model (including other plotted points) to each index, so the new faces
+	// match up with the new vertices.
+	for (size_t i = 0; i < tris.size(); i++) {
+		tris[i] += (vertices.size() + pointVerts.size()) / 3;
+	}
+
+	// Add the new point's vertices and faces to the arrays that contain all the
+	// points' vertices and faces.
+	pointVerts.insert(pointVerts.end(), verts.begin(), verts.end());
+	pointTris.insert(pointTris.end(), tris.begin(), tris.end());
+
+	// Send updated arrays to OpenGL
+	updateOpenGLData();
+}
+
+// Remove the most recently added point.
+// The arguments are the number of vertices * 3 and the number
+// of triangles * 3 that correspond to one point.
+void Model::removePathPoint(size_t vertsSize, size_t trisSize)
+{
+	// Remove point from pointVerts and pointTris data.
+	for (size_t i = 0; i < vertsSize; i++) {
+		pointVerts.pop_back();
+	}
+	for (size_t i = 0; i < trisSize; i++) {
+		pointTris.pop_back();
+	}
+
+	// Send updated arrays to OpenGL
+	updateOpenGLData();
+}
+
+void Model::updateOpenGLData()
+{
+	// Send new arrays to OpenGL, which are the model's vertices/faces
+	// concatenated with all the path points' vertices/faces.
+	std::vector<float> completeVerts = vertices;
+	completeVerts.insert(completeVerts.end(), pointVerts.begin(), pointVerts.end());
+	std::vector<unsigned int> completeTris = triangles;
+	triangles.insert(triangles.end(), pointTris.begin(), pointTris.end());
+
+	glBindVertexArray(varr);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbuf);
+	glBufferData(GL_ARRAY_BUFFER, completeVerts.size() * sizeof(float), completeVerts.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebuf);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, completeTris.size() * sizeof(unsigned int), completeTris.data(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+
+	// Data updated, now redraw scene to show it
+	glutPostRedisplay();
 }

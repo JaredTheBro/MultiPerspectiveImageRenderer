@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-struct camOrientation
+struct CamOrientation
 {
 	float pitch; // look up/down
 	float yaw; // look left/right
@@ -31,13 +31,14 @@ public:
 
 	// Getters
 	glm::vec3 getPos();
+	CamOrientation getRot();
 	glm::vec3 getLookPoint();
 
 protected:
 
 	// Camera position and orientation
 	glm::vec3 camPos;	// Camera position
-	struct camOrientation camRot; // Camera orientation
+	struct CamOrientation camRot; // Camera orientation
 
 	// Camera matrices
 	glm::mat4 camView;
