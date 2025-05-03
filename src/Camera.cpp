@@ -4,13 +4,13 @@
 
 Camera::Camera()
 {
-	camPos = glm::vec3(0, 0, 5);
+	camPos = glm::vec3(0, 10, 40);
 	camRot = { 0, 0, 0 };
 
 	camView = glm::mat4(1.0);
 	camProj = glm::mat4(1.0);
 
-	moveStep = 0.1f;
+	moveStep = 0.25f;
 	rotStep = 2.5f; // degrees
 }
 
@@ -22,9 +22,19 @@ glm::vec3 Camera::getPos()
 	return camPos;
 }
 
+void Camera::setPos(glm::vec3 pos)
+{
+	camPos = pos;
+}
+
 CamOrientation Camera::getRot()
 {
 	return camRot;
+}
+
+void Camera::setRot(CamOrientation rot)
+{
+	camRot = rot;
 }
 
 glm::vec3 Camera::getLookPoint()

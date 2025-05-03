@@ -28,6 +28,8 @@ public:
 	// Right now, remove point can only remove the most recent point added.
 	void removePoint(Model* model);
 
+	// Render final multi-perspective image
+	std::vector<unsigned char> renderFromPath(Camera* cam, int windowWidth, int windowHeight, void (*internalDisplay)());
 
 protected:
 
@@ -39,5 +41,8 @@ protected:
 	// are relative to the point's position.
 	std::vector<float> pointVerts; // Triples (x, y, z)
 	std::vector<unsigned int> pointFaces; // Triples (triangles)
+
+	// Read pixels from back buffer for multi-perspective image generation
+	void appendPixels(std::vector<unsigned char>& dest, int x, int y, int stripWidth, int stripHeight);
 
 };

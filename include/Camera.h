@@ -29,10 +29,12 @@ public:
 	void lookUp();
 	void lookDown();
 
-	// Getters
+	// Getters/setters
 	glm::vec3 getPos();
 	CamOrientation getRot();
 	glm::vec3 getLookPoint();
+	void setPos(glm::vec3 pos);
+	void setRot(CamOrientation rot);
 
 protected:
 
